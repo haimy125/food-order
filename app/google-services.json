@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "311236661132",
+    "firebase_url": "https://foodorder-faa49-default-rtdb.firebaseio.com",
+    "project_id": "foodorder-faa49",
+    "storage_bucket": "foodorder-faa49.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:311236661132:android:8df11f64571f205aa8d0a9",
+        "android_client_info": {
+          "package_name": "com.pro.foodorder"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCJrhxnMmfWBwyB251NfVMJVZEV2aL5yHo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
