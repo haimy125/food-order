@@ -59,50 +59,50 @@ class AdminOrderFragment : BaseFragment() {
             return
         }
         ControllerApplication[activity!!].bookingDatabaseReference
-                .addChildEventListener(object : ChildEventListener {
-                    @SuppressLint("NotifyDataSetChanged")
-                    override fun onChildAdded(dataSnapshot: DataSnapshot, s: String?) {
-                        val order = dataSnapshot.getValue(Order::class.java)
-                        if (order == null || mListOrder == null || mAdminOrderAdapter == null) {
-                            return
-                        }
-                        mListOrder!!.add(0, order)
-                        mAdminOrderAdapter!!.notifyDataSetChanged()
+            .addChildEventListener(object : ChildEventListener {
+                @SuppressLint("NotifyDataSetChanged")
+                override fun onChildAdded(dataSnapshot: DataSnapshot, s: String?) {
+                    val order = dataSnapshot.getValue(Order::class.java)
+                    if (order == null || mListOrder == null || mAdminOrderAdapter == null) {
+                        return
                     }
+                    mListOrder!!.add(0, order)
+                    mAdminOrderAdapter!!.notifyDataSetChanged()
+                }
 
-                    @SuppressLint("NotifyDataSetChanged")
-                    override fun onChildChanged(dataSnapshot: DataSnapshot, s: String?) {
-                        val order = dataSnapshot.getValue(Order::class.java)
-                        if (order == null || mListOrder == null || mListOrder!!.isEmpty() || mAdminOrderAdapter == null) {
-                            return
-                        }
-                        for (i in mListOrder!!.indices) {
-                            if (order.id == mListOrder!![i].id) {
-                                mListOrder!![i] = order
-                                break
-                            }
-                        }
-                        mAdminOrderAdapter!!.notifyDataSetChanged()
+                @SuppressLint("NotifyDataSetChanged")
+                override fun onChildChanged(dataSnapshot: DataSnapshot, s: String?) {
+                    val order = dataSnapshot.getValue(Order::class.java)
+                    if (order == null || mListOrder == null || mListOrder!!.isEmpty() || mAdminOrderAdapter == null) {
+                        return
                     }
-
-                    @SuppressLint("NotifyDataSetChanged")
-                    override fun onChildRemoved(dataSnapshot: DataSnapshot) {
-                        val order = dataSnapshot.getValue(Order::class.java)
-                        if (order == null || mListOrder == null || mListOrder!!.isEmpty() || mAdminOrderAdapter == null) {
-                            return
+                    for (i in mListOrder!!.indices) {
+                        if (order.id == mListOrder!![i].id) {
+                            mListOrder!![i] = order
+                            break
                         }
-                        for (orderObject in mListOrder!!) {
-                            if (order.id == orderObject.id) {
-                                mListOrder!!.remove(orderObject)
-                                break
-                            }
-                        }
-                        mAdminOrderAdapter!!.notifyDataSetChanged()
                     }
+                    mAdminOrderAdapter!!.notifyDataSetChanged()
+                }
 
-                    override fun onChildMoved(dataSnapshot: DataSnapshot, s: String?) {}
-                    override fun onCancelled(databaseError: DatabaseError) {}
-                })
+                @SuppressLint("NotifyDataSetChanged")
+                override fun onChildRemoved(dataSnapshot: DataSnapshot) {
+                    val order = dataSnapshot.getValue(Order::class.java)
+                    if (order == null || mListOrder == null || mListOrder!!.isEmpty() || mAdminOrderAdapter == null) {
+                        return
+                    }
+                    for (orderObject in mListOrder!!) {
+                        if (order.id == orderObject.id) {
+                            mListOrder!!.remove(orderObject)
+                            break
+                        }
+                    }
+                    mAdminOrderAdapter!!.notifyDataSetChanged()
+                }
+
+                override fun onChildMoved(dataSnapshot: DataSnapshot, s: String?) {}
+                override fun onCancelled(databaseError: DatabaseError) {}
+            })
     }
 
     private fun handleUpdateStatusOrder(order: Order) {
@@ -110,7 +110,7 @@ class AdminOrderFragment : BaseFragment() {
             return
         }
         ControllerApplication[activity!!].bookingDatabaseReference
-                .child(order.id.toString()).child("completed").setValue(!order.isCompleted)
+            .child(order.id.toString()).child("completed").setValue(!order.isCompleted)
     }
 
     override fun onDestroyView() {
