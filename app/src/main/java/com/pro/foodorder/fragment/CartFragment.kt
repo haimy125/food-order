@@ -2,7 +2,9 @@ package com.pro.foodorder.fragment
 
 import android.annotation.SuppressLint
 import android.app.AlertDialog
+import android.content.Context
 import android.content.DialogInterface
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -40,9 +42,11 @@ class CartFragment : BaseFragment() {
     private var mCartAdapter: CartAdapter? = null
     private var mListFoodCart: MutableList<Food>? = null
     private var mAmount = 0
+    private lateinit var sharedPreferences: SharedPreferences
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         mFragmentCartBinding = FragmentCartBinding.inflate(inflater, container, false)
+        sharedPreferences = requireContext().getSharedPreferences("UserInfo", Context.MODE_PRIVATE)
         if (!EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().register(this)
         }
@@ -151,6 +155,9 @@ class CartFragment : BaseFragment() {
         // Set data
         tvFoodsOrder.text = getStringListFoodsOrder()
         tvPriceOrder.text = mFragmentCartBinding!!.tvTotalPrice.text.toString()
+        edtNameOrder.text = sharedPreferences.getString("name","")
+        edtPhoneOrder.text = sharedPreferences.getString("phone", "")
+        edtAddressOrder.text = sharedPreferences.getString("address","")
 
         // Set listener
         tvCancelOrder.setOnClickListener { bottomSheetDialog.dismiss() }
@@ -168,6 +175,12 @@ class CartFragment : BaseFragment() {
                 ControllerApplication[activity!!].bookingDatabaseReference
                         .child(id.toString())
                         .setValue(order) { _: DatabaseError?, _: DatabaseReference? ->
+                            with(sharedPreferences.edit()) {
+                                putString("name", strName)
+                                putString("phone", strPhone)
+                                putString("address", strAddress)
+                                apply() // hoặc commit() nếu bạn muốn đồng bộ
+                            }
                             showToastMessage(activity, getString(R.string.msg_order_success))
                             hideSoftKeyboard(activity!!)
                             bottomSheetDialog.dismiss()

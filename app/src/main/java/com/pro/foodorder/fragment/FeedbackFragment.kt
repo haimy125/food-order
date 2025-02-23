@@ -1,9 +1,12 @@
 package com.pro.foodorder.fragment
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.pro.foodorder.ControllerApplication
@@ -19,11 +22,22 @@ import com.pro.foodorder.utils.StringUtil.isEmpty
 class FeedbackFragment : BaseFragment() {
 
     private var mFragmentFeedbackBinding: FragmentFeedbackBinding? = null
+    private lateinit var edtName: EditText
+    private lateinit var edtPhone: EditText
+    private lateinit var sharedPreferences: SharedPreferences
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         mFragmentFeedbackBinding = FragmentFeedbackBinding.inflate(inflater, container, false)
-        mFragmentFeedbackBinding!!.edtEmail.setText(user!!.email)
+
+        sharedPreferences = requireContext().getSharedPreferences("UserInfo", Context.MODE_PRIVATE)
+        edtName = mFragmentFeedbackBinding!!.edtName
+        edtPhone = mFragmentFeedbackBinding!!.edtPhone
+
+        //Load user info
+        loadUserInfo()
+
         mFragmentFeedbackBinding!!.tvSendFeedback.setOnClickListener { onClickSendFeedback() }
+
         return mFragmentFeedbackBinding!!.root
     }
 
@@ -44,6 +58,7 @@ class FeedbackFragment : BaseFragment() {
                 showToastMessage(activity, getString(R.string.comment_require))
             }
             else -> {
+                saveUserInfo()
                 activity!!.showProgressDialog(true)
                 val feedback = Feedback(strName, strPhone, strEmail, strComment)
                 ControllerApplication[getActivity()!!].feedbackDatabaseReference
@@ -59,9 +74,30 @@ class FeedbackFragment : BaseFragment() {
     private fun sendFeedbackSuccess() {
         hideSoftKeyboard(activity!!)
         showToastMessage(activity, getString(R.string.send_feedback_success))
-        mFragmentFeedbackBinding!!.edtName.setText("")
-        mFragmentFeedbackBinding!!.edtPhone.setText("")
+//        mFragmentFeedbackBinding!!.edtName.setText("")
+//        mFragmentFeedbackBinding!!.edtPhone.setText("")
         mFragmentFeedbackBinding!!.edtComment.setText("")
+    }
+    // Hàm lưu dữ liệu vào SharedPreferences
+    private fun saveUserInfo() {
+        val name = edtName.text.toString().trim()
+        val phone = edtPhone.text.toString().trim()
+//        val sharedPreferences = getSharedPreferences("FeedbackPrefs", Context.MODE_PRIVATE)
+        with(sharedPreferences.edit()) {
+            putString("name", name)
+            putString("phone", phone)
+            apply() // hoặc commit() nếu bạn muốn đồng bộ
+        }
+    }
+    // Hàm lấy dữ liệu đã lưu và tự động điền vào EditText
+    private fun loadUserInfo() {
+//        val sharedPreferences = getSharedPreferences("FeedbackPrefs", Context.MODE_PRIVATE)
+        mFragmentFeedbackBinding!!.edtEmail.setText(user!!.email)
+
+        val savedName = sharedPreferences.getString("name", "")
+        val savedPhone = sharedPreferences.getString("phone", "")
+        edtName.setText(savedName)
+        edtPhone.setText(savedPhone)
     }
 
     override fun initToolbar() {

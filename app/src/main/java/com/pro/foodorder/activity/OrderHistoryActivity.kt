@@ -59,6 +59,9 @@ class OrderHistoryActivity : BaseActivity() {
                                 }
                             }
                         }
+                        // Sắp xếp danh sách theo thuộc tính isCompleted: false sẽ đứng trước true
+                        mListOrder!!.sortBy { if (it.isCompleted) 1 else 0 }
+
                         mOrderAdapter = OrderAdapter(this@OrderHistoryActivity, mListOrder)
                         mActivityOrderHistoryBinding!!.rcvOrderHistory.adapter = mOrderAdapter
                     }

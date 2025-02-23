@@ -67,7 +67,10 @@ class AdminOrderFragment : BaseFragment() {
                         return
                     }
                     mListOrder!!.add(0, order)
+                    // Sắp xếp: order chưa hoàn thành (isCompleted == false) được ưu tiên
+                    mListOrder!!.sortBy { if (it.isCompleted) 1 else 0 }
                     mAdminOrderAdapter!!.notifyDataSetChanged()
+//                    mAdminOrderAdapter!!.notifyDataSetChanged()
                 }
 
                 @SuppressLint("NotifyDataSetChanged")
@@ -82,7 +85,10 @@ class AdminOrderFragment : BaseFragment() {
                             break
                         }
                     }
+                    // Sau khi cập nhật, sắp xếp lại danh sách
+                    mListOrder!!.sortBy { if (it.isCompleted) 1 else 0 }
                     mAdminOrderAdapter!!.notifyDataSetChanged()
+//                    mAdminOrderAdapter!!.notifyDataSetChanged()
                 }
 
                 @SuppressLint("NotifyDataSetChanged")
@@ -97,6 +103,8 @@ class AdminOrderFragment : BaseFragment() {
                             break
                         }
                     }
+                    // Sắp xếp lại sau khi xoá
+                    mListOrder!!.sortBy { if (it.isCompleted) 1 else 0 }
                     mAdminOrderAdapter!!.notifyDataSetChanged()
                 }
 

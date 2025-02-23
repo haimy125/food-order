@@ -1,7 +1,9 @@
 package com.pro.foodorder.adapter
 
+import android.app.AlertDialog
 import android.content.Context
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
@@ -42,8 +44,10 @@ class AdminOrderAdapter(
         // Đặt màu nền dựa trên trạng thái disable
         if (isOrderDisabled) {
             holder.mItemAdminOrderBinding.layoutItem.setBackgroundColor(disabledColor)
+            holder.mItemAdminOrderBinding.backgroundImageView.visibility = View.VISIBLE
         } else {
             holder.mItemAdminOrderBinding.layoutItem.setBackgroundColor(enabledColor)
+            holder.mItemAdminOrderBinding.backgroundImageView.visibility = View.INVISIBLE
         }
 
         holder.mItemAdminOrderBinding.chbStatus.isEnabled = !isOrderDisabled  // Checkbox enable/disable
@@ -70,9 +74,25 @@ class AdminOrderAdapter(
 
         if (!isOrderDisabled) {
             holder.mItemAdminOrderBinding.chbStatus.setOnCheckedChangeListener { _, isChecked ->
-                // Chỉ cập nhật nếu trạng thái thay đổi
-                if (isChecked != order.isCompleted) {
-                    mIUpdateStatusListener.updateStatus(order)
+                if(isChecked){
+                    AlertDialog.Builder(mContext)
+                        .setTitle("Xác nhận")
+                        .setMessage("Bạn có chắc chắn muốn thay đổi trạng thái đơn hàng thành \"Đã thanh toán\" không?")
+                        .setPositiveButton("Có") { dialog, _ ->
+                            // Chỉ cập nhật nếu trạng thái thay đổi
+                            if (isChecked != order.isCompleted) {
+                                mIUpdateStatusListener.updateStatus(order)
+                                holder.mItemAdminOrderBinding.layoutItem.setBackgroundColor(disabledColor)
+                                holder.mItemAdminOrderBinding.backgroundImageView.visibility = View.VISIBLE
+                            }
+                            dialog.dismiss()
+                        }
+                        .setNegativeButton("Không") { dialog, _ ->
+                            holder.mItemAdminOrderBinding.chbStatus.isChecked = false
+                            dialog.dismiss()
+                        }
+                        .show()
+
                 }
             }
         }
